@@ -1,0 +1,91 @@
+<form>
+  <label>해양데이터 대시보드2</label>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="dropdown" token="PLACE" searchWhenChanged="true">
+      <label>표지</label>
+      <fieldForLabel>표지</fieldForLabel>
+      <fieldForValue>표지</fieldForValue>
+      <search>
+        <query>index="marineweather" sourcetype="marineweather"
+| stats count by 표지</query>
+        <earliest>1546300800</earliest>
+        <latest>1549065600</latest>
+      </search>
+    </input>
+    <input type="multiselect" token="SENSOR" searchWhenChanged="true">
+      <label>측정값</label>
+      <choice value="avg(수온) as 수온평균">수온</choice>
+      <choice value="avg(기압) as 기압평균">기압</choice>
+      <choice value="avg(기온) as 기온평균">기온</choice>
+      <choice value="avg(풍속) as 풍속평균">풍속</choice>
+      <choice value="avg(습도) as 습도평균">습도</choice>
+      <choice value="avg(염분) as 염분평균">염분</choice>
+      <delimiter>, </delimiter>
+    </input>
+    <input type="multiselect" token="OVERLAYF" searchWhenChanged="true">
+      <label>오버레이필드</label>
+      <choice value="수온평균">수온평균</choice>
+      <choice value="기압평균">기압평균</choice>
+      <choice value="기온평균">기온평균</choice>
+      <choice value="풍속평균">풍속평균</choice>
+      <choice value="습도평균">습도평균</choice>
+      <choice value="염분평균">염분평균</choice>
+      <default>기압평균</default>
+      <delimiter> </delimiter>
+    </input>
+    <input type="time" token="DT" searchWhenChanged="true">
+      <label>시간</label>
+      <default>
+        <earliest>1546300800</earliest>
+        <latest>1549065600</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>여러값 비교해보기 ($PLACE$)</title>
+      <chart>
+        <search>
+          <query>index="marineweather" sourcetype="marineweather" 표지="$PLACE$"
+| timechart $SENSOR$ span=1d</query>
+          <earliest>$DT.earliest$</earliest>
+          <latest>$DT.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">$OVERLAYF$</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+</form>
